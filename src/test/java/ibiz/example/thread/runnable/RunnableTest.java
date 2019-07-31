@@ -2,19 +2,25 @@ package ibiz.example.thread.runnable;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
 
 import ibiz.example.thread.common.Sync;
 import ibiz.example.thread.data.ThreadTestData;
+import ibiz.example.thread.handler.callback.CallbackHandler;
+import ibiz.example.thread.handler.callback.YongCompletionHandlerInterface;
 import ibiz.example.thread.runnable.RunnableCallbackClient;
 import ibiz.example.thread.runnable.RunnableClient;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class RunnableTest {
+
+	private String[] threadNames = {"thread1", "thread2", "thread3"};
+	private long[] timeWaits = {1000L, 2000L, 500L};
 	
 	@Test
-//	@Ignore
+	@Ignore
 	public void makeThread() {
-		String[] threadNames = {"thread1", "thread2", "thread3", "thread4"};
-		long[] timeWaits = {10000L, 1000L, 1000L, 1000L};
 		
 		//synchronized 테스트를 위한 클래스
 		Sync sync = new Sync();
@@ -25,7 +31,7 @@ public class RunnableTest {
 		 * sync의 메소드 사용시간은 각 쓰레드마다 다르다.
 		 */
 		for (int i = 0; i < timeWaits.length; i++) {
-			Thread t1 = new Thread(new RunnableClient(threadNames[i], timeWaits[i], sync));
+			Thread t1 = new Thread(new RunnableClient(timeWaits[i], sync));
 			
 			t1.setName(threadNames[i]);
 			t1.start();
@@ -44,9 +50,11 @@ public class RunnableTest {
 	}
 	
 	@Test
-	@Ignore
+//	@Ignore
 	public void CompleteHandlerTest() {
-		RunnableCallbackClient handler = new RunnableCallbackClient();
+		CallbackHandler callback = new CallbackHandler();
+		
+		RunnableCallbackClient handler = new RunnableCallbackClient(callback);
 		handler.doWork("test");
 		handler.doWork("test1");
 	}

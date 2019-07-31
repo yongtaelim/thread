@@ -3,13 +3,16 @@ package ibiz.example.thread.runnable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import ibiz.example.thread.handler.callback.Callback;
+import ibiz.example.thread.handler.callback.CallbackHandler;
+import ibiz.example.thread.handler.callback.YongCompletionHandlerInterface;
 
 public class RunnableCallbackClient {
 	private ExecutorService executorService;
+	private CallbackHandler handler;
 		
-	public RunnableCallbackClient() {
-		executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+	public RunnableCallbackClient(CallbackHandler handler) {
+		this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		this.handler = handler;
 	}
 	
 	public void doWork(String test) {
@@ -23,11 +26,11 @@ public class RunnableCallbackClient {
 				for(String testString : testArray) {
 					System.out.println(testString);
 					if(test.equals("test")) {
-						Callback.callback.completed(index, null);
-						Callback.callback.completed("Yong Complete handler Test!!!");						
+						handler.callback.completed(index, null);
+						handler.callback.completed("Yong Complete handler Test!!!");						
 					}
 					else
-						Callback.callback.failed(new Exception(), null);
+						handler.callback.failed(new Exception(), null);
 					index++;
 				}
 			}
